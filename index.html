@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>WebGL Drag and Drop Demo</title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2113.65">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; color: #000000; -webkit-text-stroke: #000000}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; color: #000000; -webkit-text-stroke: #000000; min-height: 14.0px}
+    span.s1 {font-kerning: none}
+  </style>
+</head>
+<body>
+<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
+<p class="p1"><span class="s1">&lt;html lang="en"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;head&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;title&gt;WebGL Drag and Drop Demo&lt;/title&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;style&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>body { margin: 0; overflow: hidden; }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>canvas { display: block; }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/head&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;body&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script type="module"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>import * as THREE from 'https://cdn.skypack.dev/three';</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>import { OrbitControls } from 'https://cdn.skypack.dev/three/examples/jsm/controls/OrbitControls.js';</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const scene = new THREE.Scene();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>scene.background = new THREE.Color('#f0f0f0');</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>camera.position.set(0, 10, 20);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const renderer = new THREE.WebGLRenderer({ antialias: true });</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>renderer.setSize(window.innerWidth, window.innerHeight);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>document.body.appendChild(renderer.domElement);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const controls = new OrbitControls(camera, renderer.domElement);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>// Staff platforms</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const staffPositions = [-10, 0, 10];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const staffBoxes = [];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>staffPositions.forEach((x, i) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const geo = new THREE.BoxGeometry(4, 0.5, 4);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const mat = new THREE.MeshStandardMaterial({ color: 0x99ccff });</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const mesh = new THREE.Mesh(geo, mat);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>mesh.position.set(x, 0, 0);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>scene.add(mesh);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>staffBoxes.push(mesh);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>// Modules (draggable)</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const modules = [];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>for (let i = 0; i &lt; 4; i++) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const geo = new THREE.BoxGeometry(2, 1, 2);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const mat = new THREE.MeshStandardMaterial({ color: 0xffaa00 });</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const box = new THREE.Mesh(geo, mat);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>box.position.set(-10 + i * 6, 2, -5);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>box.userData.module = `M${i+1}`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>scene.add(box);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>modules.push(box);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>// Lights</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>scene.add(ambientLight);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>dirLight.position.set(5, 10, 7);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>scene.add(dirLight);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>// Drag Controls</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>let selected = null;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>let offset = new THREE.Vector3();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const raycaster = new THREE.Raycaster();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const mouse = new THREE.Vector2();</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>window.addEventListener('mousedown', (event) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>mouse.x = (event.clientX / window.innerWidth) * 2 - 1;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>raycaster.setFromCamera(mouse, camera);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const intersects = raycaster.intersectObjects(modules);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>if (intersects.length &gt; 0) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>selected = intersects[0].object;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>offset.copy(intersects[0].point).sub(selected.position);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>window.addEventListener('mousemove', (event) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>if (!selected) return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>mouse.x = (event.clientX / window.innerWidth) * 2 - 1;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>raycaster.setFromCamera(mouse, camera);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const planeZ = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const point = new THREE.Vector3();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>raycaster.ray.intersectPlane(planeZ, point);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>selected.position.copy(point.sub(offset));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>window.addEventListener('mouseup', () =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>if (selected) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>// Optional: Snap to nearest staff platform</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>const closest = staffBoxes.reduce((closest, box) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const d = selected.position.distanceTo(box.position);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>return d &lt; closest.dist ? { box, dist: d } : closest;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>}, { box: null, dist: Infinity });</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>if (closest.box &amp;&amp; closest.dist &lt; 5) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>selected.position.set(closest.box.position.x, 2, closest.box.position.z);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>selected = null;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>window.addEventListener('resize', () =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>camera.aspect = window.innerWidth / window.innerHeight;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>camera.updateProjectionMatrix();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>renderer.setSize(window.innerWidth, window.innerHeight);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>function animate() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>requestAnimationFrame(animate);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>renderer.render(scene, camera);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>animate();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/body&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
+</body>
+</html>
